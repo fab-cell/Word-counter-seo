@@ -791,4 +791,226 @@
             
             const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
             
-            // VERY STRONG
+        function detectAIContent(text, words) {
+            // Enhanced AI Detection Algorithm v2
+            let aiScore = 0;
+            let humanIndicators = 0;
+            
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            
+            // VERY STRONG AI INDICATORS
+            
+            // 1. Classic AI transition words (MAJOR indicator)
+            const classicAITransitions = ['furthermore', 'moreover', 'additionally', 'consequently', 'therefore', 'however', 'nevertheless', 'nonetheless', 'subsequently', 'accordingly'];
+            let transitionCount = 0;
+            classicAITransitions.forEach(transition => {
+                const regex = new RegExp(`\\b${transition}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) transitionCount += matches.length;
+            });
+            
+            // Heavy penalty for multiple formal transitions
+            if (transitionCount >= 3) aiScore += 50;
+            else if (transitionCount >= 2) aiScore += 35;
+            else if (transitionCount >= 1) aiScore += 20;
+            
+            // 2. Sentences starting with formal transitions (classic AI pattern)
+            let formalStartCount = 0;
+            sentences.forEach(sentence => {
+                const firstWord = sentence.trim().split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
+                if (classicAITransitions.includes(firstWord)) {
+                    formalStartCount++;
+                }
+            });
+            if (formalStartCount >= 2) aiScore += 40;
+            else if (formalStartCount >= 1) aiScore += 25;
+            
+            // 3. Em-dashes - SUPER STRONG AI indicator (most reliable sign)
+            const emDashCount = (text.match(/—/g) || []).length;
+            if (emDashCount >= 1) {
+                // Even ONE em-dash is highly suspicious for AI
+                aiScore += 55; // Immediately jump over 50%
+            }
+            if (emDashCount >= 2) {
+                aiScore += 25; // Additional penalty for multiple
+            }
+            if (emDashCount >= 4) {
+                aiScore += 20; // Heavy penalty for excessive use
+            }
+            
+            // 4. Academic/formal vocabulary density
+            const academicWords = ['remarkable', 'significant', 'substantial', 'considerable', 'extraordinary', 'crucial', 'essential', 'vital', 'important', 'valuable', 'beneficial'];
+            let academicCount = 0;
+            academicWords.forEach(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) academicCount += matches.length;
+            });
+            if (academicCount > words.length * 0.02) aiScore += 20;
+            
+            // 5. Lack of personal pronouns
+            const personalPronouns = ['i', 'me', 'my', 'myself'];
+            const personalCount = words.filter(word => 
+                personalPronouns.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            ).length;
+            if (personalCount === 0 && words.length > 50) aiScore += 15;
+            
+            // HUMAN INDICATORS
+            
+            // 1. Personal expressions
+            const personalPhrases = ['i think', 'i believe', 'in my opinion', 'personally'];
+            let personalPhraseCount = 0;
+            personalPhrases.forEach(phrase => {
+                if (text.toLowerCase().includes(phrase)) {
+                    personalPhraseCount++;
+                }
+            });
+            if (personalPhraseCount > 0) humanIndicators += 25;
+            
+            // 2. Contractions
+            const contractions = ["don't", "can't", "won't", "isn't", "aren't"];
+            const contractionCount = words.filter(word => 
+                contractions.includes(word.toLowerCase())
+            ).length;
+            if (contractionCount > 0) humanIndicators += 15;
+            
+            // 3. Questions
+            const questionCount = (text.match(/\?/g) || []).length;
+            if (questionCount > 0) humanIndicators += 10;
+            
+            // Calculate final score
+            let finalScore = aiScore - humanIndicators;
+            
+            // Normalize to 0-100 range
+            finalScore = Math.min(100, Math.max(0, finalScore));
+            
+            // Update AI detector display
+            updateAIDetector(finalScore);
+        }
+        
+        function updateAIDetector(score) {
+            aiDetector.classList.add('visible');
+            aiScore.textContent = `${score.toFixed(0)}% AI`;
+            
+            // Remove existing risk classes
+            aiDetector.classList.remove('low-risk', 'medium-risk', 'high-risk');
+            
+            // Add appropriate risk class
+            if (score < 30) {
+                aiDetector.classList.add('low-risk');
+            } else if (score < 70) {
+                aiDetector.classList.add('medium-risk');
+            } else {
+                aiDetector.classList.add('high-risk');
+            }
+        }
+
+        function clearText() {
+            textInput.value = '';
+            seoTitle.value = '';
+            metaDescription.value = '';
+            resetStats();
+            analysisSection.style.display = 'none';
+            aiDetector.classList.remove('visible');
+            updateSEOCounters();
+        }
+
+        function analyzeSEOTitle() {
+            const title = seoTitle.value;
+            const length = title.length;
+            
+            let counterClass = 'counter-good';
+            let message = `${length} / 60 characters (Optimal: 50-60)`;
+            
+            if (length === 0) {
+                counterClass = 'counter-danger';
+                message = '0 / 60 characters (Optimal: 50-60)';
+            } else if (length < 30) {
+                counterClass = 'counter-danger';
+                message = `${length} / 60 characters (Too short - Add more keywords)`;
+            } else if (length < 50) {
+                counterClass = 'counter-warning';
+                message = `${length} / 60 characters (Good - Consider adding more)`;
+            } else if (length <= 60) {
+                counterClass = 'counter-good';
+                message = `${length} / 60 characters (Perfect length!)`;
+            } else {
+                counterClass = 'counter-danger';
+                message = `${length} / 60 characters (Too long - Will be truncated)`;
+            }
+            
+            titleCounter.textContent = message;
+            titleCounter.className = `seo-counter ${counterClass}`;
+        }
+
+        function analyzeSEODescription() {
+            const description = metaDescription.value;
+            const length = description.length;
+            
+            let counterClass = 'counter-good';
+            let message = `${length} / 156 characters (Optimal: 150-156)`;
+            
+            if (length === 0) {
+                counterClass = 'counter-danger';
+                message = '0 / 156 characters (Optimal: 150-156)';
+            } else if (length < 120) {
+                counterClass = 'counter-warning';
+                message = `${length} / 156 characters (Consider adding more details)`;
+            } else if (length <= 156) {
+                counterClass = 'counter-good';
+                message = `${length} / 156 characters (Excellent length!)`;
+            } else {
+                counterClass = 'counter-danger';
+                message = `${length} / 156 characters (Too long - Will be truncated)`;
+            }
+            
+            metaCounter.textContent = message;
+            metaCounter.className = `seo-counter ${counterClass}`;
+        }
+
+        function updateSEOCounters() {
+            analyzeSEOTitle();
+            analyzeSEODescription();
+        }
+
+        function shareWebsite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Word Counter SEO - Free Text Analysis Tool',
+                    text: 'Professional word counter and SEO text analysis tool.',
+                    url: window.location.href
+                }).catch(() => fallbackShare());
+            } else {
+                fallbackShare();
+            }
+        }
+
+        function fallbackShare() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; background: #10b981;
+                    color: white; padding: 12px 24px; border-radius: 8px; z-index: 1000;
+                    font-size: 14px; font-weight: 600; animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = 'Link copied!';
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            }).catch(() => {
+                alert('Copy URL: ' + window.location.href);
+            });
+        }
+
+        function openConverter() {
+            window.open('https://your-converter-url.com', '_blank');
+        }
+
+        // Initialize
+        updateSEOCounters();
+        
+        const style = document.createElement('style');
+        style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
