@@ -770,131 +770,136 @@
         }
 
         function detectAIContent(text, words) {
-            // Enhanced AI Detection Algorithm
+            // Enhanced AI Detection Algorithm v2
             let aiScore = 0;
             let humanIndicators = 0;
             
             const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
             
-            // STRONG AI INDICATORS (major red flags)
+            // VERY STRONG AI INDICATORS
             
-            // 1. Excessive use of em-dashes (—) - very common in AI writing
+            // 1. Classic AI transition words (MAJOR indicator)
+            const classicAITransitions = ['furthermore', 'moreover', 'additionally', 'consequently', 'therefore', 'however', 'nevertheless', 'nonetheless', 'subsequently', 'accordingly'];
+            let transitionCount = 0;
+            classicAITransitions.forEach(transition => {
+                const regex = new RegExp(`\\b${transition}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) transitionCount += matches.length;
+            });
+            
+            // Heavy penalty for multiple formal transitions
+            if (transitionCount >= 3) aiScore += 50;
+            else if (transitionCount >= 2) aiScore += 35;
+            else if (transitionCount >= 1) aiScore += 20;
+            
+            // 2. Sentences starting with formal transitions (classic AI pattern)
+            let formalStartCount = 0;
+            sentences.forEach(sentence => {
+                const firstWord = sentence.trim().split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
+                if (classicAITransitions.includes(firstWord)) {
+                    formalStartCount++;
+                }
+            });
+            if (formalStartCount >= 2) aiScore += 40;
+            else if (formalStartCount >= 1) aiScore += 25;
+            
+            // 3. Excessive use of em-dashes (modern AI indicator)
             const emDashCount = (text.match(/—/g) || []).length;
             if (emDashCount > 2) aiScore += 30;
-            if (emDashCount > 4) aiScore += 20; // Additional penalty
+            if (emDashCount > 4) aiScore += 20;
             
-            // 2. AI-style dramatic punctuation patterns
-            const dramaticPunctuation = (text.match(/\.\.\.|—|–/g) || []).length;
-            if (dramaticPunctuation > 3) aiScore += 25;
-            
-            // 3. Overly structured marketing language
-            const marketingPhrases = [
-                'first impressions matter', 'speaks before you do', 'tells a story', 'owning your identity',
-                'step in', 'more than just', "isn't just about", 'on the other hand', 'think of it like',
-                'stands out', 'deserves the same', 'final word', 'the world will notice', 'show up as'
-            ];
-            let marketingCount = 0;
-            marketingPhrases.forEach(phrase => {
-                if (text.toLowerCase().includes(phrase.toLowerCase())) {
-                    marketingCount++;
-                }
+            // 4. Academic/formal vocabulary density
+            const academicWords = ['remarkable', 'significant', 'substantial', 'considerable', 'extraordinary', 'crucial', 'essential', 'vital', 'important', 'valuable', 'beneficial', 'advantageous', 'comprehensive', 'extensive', 'numerous', 'various', 'diverse', 'particular', 'specific', 'concerning', 'regarding', 'pertaining'];
+            let academicCount = 0;
+            academicWords.forEach(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) academicCount += matches.length;
             });
-            if (marketingCount > 2) aiScore += 25;
-            if (marketingCount > 4) aiScore += 15;
+            if (academicCount > words.length * 0.03) aiScore += 30;
+            else if (academicCount > words.length * 0.02) aiScore += 20;
+            else if (academicCount > words.length * 0.01) aiScore += 10;
             
-            // 4. Perfect list formatting (bullet points with bold)
-            const bulletPoints = (text.match(/\*\s*\*\*.*?\*\*/g) || []).length;
-            if (bulletPoints > 2) aiScore += 20;
+            // 5. Perfect sentence structure uniformity
+            if (sentences.length > 3) {
+                const sentenceLengths = sentences.map(s => s.trim().split(/\s+/).length);
+                const avgLength = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length;
+                const variance = sentenceLengths.reduce((acc, len) => acc + Math.pow(len - avgLength, 2), 0) / sentenceLengths.length;
+                
+                // AI tends to write very consistent sentence lengths
+                if (variance < 15 && avgLength > 15) aiScore += 25;
+                else if (variance < 25 && avgLength > 12) aiScore += 15;
+            }
             
-            // 5. AI-style metaphors and analogies
-            const aiMetaphors = ['like tailoring', 'think of', 'just like', 'similar to', 'compared to'];
-            let metaphorCount = 0;
-            aiMetaphors.forEach(metaphor => {
-                if (text.toLowerCase().includes(metaphor)) {
-                    metaphorCount++;
-                }
-            });
-            if (metaphorCount > 1) aiScore += 15;
-            
-            // 6. Generic conclusion patterns
-            const aiConclusions = [
-                'the final word', 'own your look', 'master your', 'the world will notice',
-                'choose to', 'show up as', 'it\'s self-respect', 'isn\'t vanity'
-            ];
+            // 6. Generic scientific/academic conclusions
+            const academicConclusions = ['for future generations', 'warrants attention', 'requires further', 'is essential', 'are crucial', 'plays a role', 'serves as', 'represents a', 'contributes to'];
             let conclusionCount = 0;
-            aiConclusions.forEach(conclusion => {
-                if (text.toLowerCase().includes(conclusion.toLowerCase())) {
+            academicConclusions.forEach(conclusion => {
+                if (text.toLowerCase().includes(conclusion)) {
                     conclusionCount++;
                 }
             });
-            if (conclusionCount > 1) aiScore += 20;
+            if (conclusionCount >= 2) aiScore += 25;
+            else if (conclusionCount >= 1) aiScore += 15;
             
-            // 7. Excessive formal academic language
-            const academicWords = ['furthermore', 'moreover', 'consequently', 'subsequently', 'nevertheless', 'nonetheless', 'therefore', 'accordingly', 'specifically', 'particularly', 'essentially', 'fundamentally', 'comprehensive', 'extensive', 'significant', 'substantial', 'considerable'];
-            const academicCount = words.filter(word => 
-                academicWords.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            // 7. Lack of personal pronouns (AI avoids first person)
+            const personalPronouns = ['i', 'me', 'my', 'myself', 'we', 'us', 'our', 'ourselves'];
+            const personalCount = words.filter(word => 
+                personalPronouns.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
             ).length;
-            if (academicCount > words.length * 0.02) aiScore += 20;
+            if (personalCount === 0 && words.length > 50) aiScore += 20;
             
-            // 8. Repetitive sentence starters
-            if (sentences.length > 4) {
-                const sentenceStarters = sentences.map(s => s.trim().split(' ').slice(0, 2).join(' ').toLowerCase());
-                const uniqueStarters = new Set(sentenceStarters);
-                if (uniqueStarters.size < sentenceStarters.length * 0.7) {
-                    aiScore += 20;
-                }
-            }
+            // 8. Overuse of qualifying language
+            const qualifiers = ['particularly', 'especially', 'notably', 'significantly', 'considerably', 'substantially', 'remarkably', 'extraordinarily'];
+            let qualifierCount = 0;
+            qualifiers.forEach(qualifier => {
+                const regex = new RegExp(`\\b${qualifier}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) qualifierCount += matches.length;
+            });
+            if (qualifierCount > 2) aiScore += 20;
+            else if (qualifierCount > 1) aiScore += 10;
             
-            // 9. Perfect paragraph structure (AI loves perfect organization)
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-            if (paragraphs.length > 3) {
-                const paragraphLengths = paragraphs.map(p => p.split(/\s+/).length);
-                const avgParagraphLength = paragraphLengths.reduce((a, b) => a + b, 0) / paragraphLengths.length;
-                
-                // AI tends to write very consistent paragraph lengths
-                const variance = paragraphLengths.reduce((acc, len) => acc + Math.pow(len - avgParagraphLength, 2), 0) / paragraphLengths.length;
-                if (variance < 100 && avgParagraphLength > 30) {
-                    aiScore += 15;
-                }
-            }
-            
-            // HUMAN INDICATORS (reduce AI score)
+            // STRONG HUMAN INDICATORS
             
             // 1. Personal anecdotes and experiences
-            const personalWords = ['i remember', 'my experience', 'personally', 'in my opinion', 'i think', 'i believe', 'happened to me', 'i noticed'];
-            let personalCount = 0;
-            personalWords.forEach(phrase => {
+            const personalPhrases = ['i remember', 'when i was', 'my experience', 'personally', 'in my opinion', 'i think', 'i believe', 'i feel', 'growing up', 'as a kid', 'my dad', 'my mom'];
+            let personalPhraseCount = 0;
+            personalPhrases.forEach(phrase => {
                 if (text.toLowerCase().includes(phrase)) {
-                    personalCount++;
+                    personalPhraseCount++;
                 }
             });
-            if (personalCount > 0) humanIndicators += 20;
+            if (personalPhraseCount > 0) humanIndicators += 30;
             
-            // 2. Informal contractions and casual language
+            // 2. Informal language and contractions
             const contractions = ["don't", "can't", "won't", "isn't", "aren't", "doesn't", "wasn't", "weren't", "you're", "you'll", "you've", "it's", "that's", "here's", "there's"];
             const contractionCount = words.filter(word => 
-                contractions.includes(word.toLowerCase().replace(/[^a-zA-Z']/g, ''))
+                contractions.includes(word.toLowerCase())
             ).length;
-            if (contractionCount > words.length * 0.02) humanIndicators += 15;
+            if (contractionCount > 0) humanIndicators += 15;
             
-            // 3. Questions and direct engagement
+            // 3. Casual expressions
+            const casualExpressions = ['pretty cool', 'really', 'totally', 'definitely', 'absolutely', 'honestly', 'seriously', 'basically', 'actually', 'obviously', 'clearly', 'sure', 'yeah', 'nah'];
+            let casualCount = 0;
+            casualExpressions.forEach(expr => {
+                if (text.toLowerCase().includes(expr)) {
+                    casualCount++;
+                }
+            });
+            if (casualCount > 0) humanIndicators += 20;
+            
+            // 4. Questions (humans ask more questions)
             const questionCount = (text.match(/\?/g) || []).length;
-            if (questionCount > 1) humanIndicators += 15;
-            if (questionCount > 3) humanIndicators += 10;
+            if (questionCount > 1) humanIndicators += 20;
+            else if (questionCount > 0) humanIndicators += 10;
             
-            // 4. Emotional expressions
-            const emotionalWords = ['wow', 'amazing', 'terrible', 'awesome', 'sucks', 'love', 'hate', 'excited', 'frustrated', 'honestly', 'seriously'];
-            const emotionalCount = words.filter(word => 
-                emotionalWords.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
-            ).length;
-            if (emotionalCount > 0) humanIndicators += 10;
-            
-            // 5. Sentence fragments and informal structure
+            // 5. Sentence fragments
             const fragments = sentences.filter(s => s.trim().split(/\s+/).length < 4).length;
             if (fragments > 1) humanIndicators += 15;
             
-            // 6. Typos and imperfections (humans make mistakes)
-            const commonTypos = ['teh', 'recieve', 'seperate', 'definately', 'occured', 'neccessary'];
+            // 6. Typos and imperfections
+            const commonTypos = ['teh', 'recieve', 'seperate', 'definately', 'occured', 'neccessary', 'youre', 'its a'];
             let typoCount = 0;
             commonTypos.forEach(typo => {
                 if (text.toLowerCase().includes(typo)) {
@@ -906,37 +911,20 @@
             // Calculate final score
             let finalScore = aiScore - humanIndicators;
             
-            // Bonus penalties for multiple AI indicators
-            if (emDashCount > 3 && marketingCount > 2) finalScore += 15; // Multiple strong indicators
-            if (bulletPoints > 0 && conclusionCount > 0) finalScore += 10; // Perfect structure + perfect ending
+            // Bonus penalties for strong AI combinations
+            if (transitionCount >= 2 && academicCount > words.length * 0.02) {
+                finalScore += 20; // Classic AI: formal transitions + academic words
+            }
+            
+            if (personalCount === 0 && contractionCount === 0 && questionCount === 0) {
+                finalScore += 15; // Very impersonal = AI likely
+            }
             
             // Normalize to 0-100 range
             finalScore = Math.min(100, Math.max(0, finalScore));
             
             // Update AI detector display
             updateAIDetector(finalScore);
-        }
-        
-        function calculateGrammarScore(text) {
-            // Simple grammar scoring based on punctuation and capitalization
-            let score = 100;
-            
-            // Check for proper sentence capitalization
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const improperCapitalization = sentences.filter(s => {
-                const firstChar = s.trim().charAt(0);
-                return firstChar && firstChar !== firstChar.toUpperCase();
-            }).length;
-            
-            score -= (improperCapitalization / sentences.length) * 20;
-            
-            // Check for missing punctuation at sentence ends
-            const sentenceEnds = text.match(/[.!?]/g) || [];
-            if (sentenceEnds.length < sentences.length * 0.8) {
-                score -= 15;
-            }
-            
-            return Math.max(0, score);
         }
         
         function updateAIDetector(score) {
