@@ -343,38 +343,12 @@
             border-radius: 16px;
             text-align: center;
             transition: transform 0.3s ease;
+            cursor: pointer;
         }
 
         .feature-card:hover {
             transform: translateY(-4px);
-        }
-
-        .share-card {
-            cursor: pointer;
-            position: relative;
-        }
-
-        .share-card:hover {
             background: #f1f5f9;
-            transform: translateY(-6px);
-        }
-
-        .share-card:active {
-            transform: translateY(-2px);
-        }
-
-        .converter-card {
-            cursor: pointer;
-            position: relative;
-        }
-
-        .converter-card:hover {
-            background: #f1f5f9;
-            transform: translateY(-6px);
-        }
-
-        .converter-card:active {
-            transform: translateY(-2px);
         }
 
         .feature-icon {
@@ -453,7 +427,6 @@
             ></textarea>
             <button class="clear-btn" id="clearBtn">Clear All</button>
             
-            <!-- AI Detection Indicator -->
             <div class="ai-detector" id="aiDetector">
                 <span class="robot-icon">🤖</span>
                 <span id="aiScore">0% AI</span>
@@ -555,11 +528,11 @@
                 <span class="feature-icon">🤖</span>
                 <div class="feature-title">AI Detector</div>
             </div>
-            <div class="feature-card converter-card" onclick="openConverter()">
+            <div class="feature-card" onclick="openConverter()">
                 <span class="feature-icon">🔄</span>
                 <div class="feature-title">Image Converter</div>
             </div>
-            <div class="feature-card share-card" onclick="shareWebsite()">
+            <div class="feature-card" onclick="shareWebsite()">
                 <span class="feature-icon">📤</span>
                 <div class="feature-title">Share This Tool</div>
             </div>
@@ -570,14 +543,10 @@
         const textInput = document.getElementById('textInput');
         const clearBtn = document.getElementById('clearBtn');
         const analysisSection = document.getElementById('analysisSection');
-
-        // SEO inputs
         const seoTitle = document.getElementById('seoTitle');
         const metaDescription = document.getElementById('metaDescription');
         const titleCounter = document.getElementById('titleCounter');
         const metaCounter = document.getElementById('metaCounter');
-
-        // AI Detection elements
         const aiDetector = document.getElementById('aiDetector');
         const aiScore = document.getElementById('aiScore');
 
@@ -590,17 +559,13 @@
         const readingTime = document.getElementById('readingTime');
         const contentScore = document.getElementById('contentScore');
         const contentStrength = document.getElementById('contentStrength');
-
-        // Analysis elements
         const readabilityScore = document.getElementById('readabilityScore');
         const avgWordsPerSentence = document.getElementById('avgWordsPerSentence');
         const keywordDensity = document.getElementById('keywordDensity');
 
-        // Real-time analysis
+        // Event listeners
         textInput.addEventListener('input', analyzeText);
         clearBtn.addEventListener('click', clearText);
-
-        // SEO inputs analysis
         seoTitle.addEventListener('input', analyzeSEOTitle);
         metaDescription.addEventListener('input', analyzeSEODescription);
 
@@ -627,9 +592,8 @@
             charNoSpaceCount.textContent = charactersNoSpace;
             sentenceCount.textContent = sentences.length;
             paragraphCount.textContent = paragraphs.length;
-            readingTime.textContent = Math.ceil(words.length / 200); // 200 WPM average
+            readingTime.textContent = Math.ceil(words.length / 200);
 
-            // Show analysis if text exists
             if (words.length > 0) {
                 analysisSection.style.display = 'block';
                 performSEOAnalysis(words, sentences);
@@ -639,17 +603,12 @@
         }
 
         function performSEOAnalysis(words, sentences) {
-            // Calculate readability (simplified Flesch formula)
             const avgWordsPerSent = words.length / sentences.length || 0;
             const avgSyllablesPerWord = calculateAvgSyllables(words);
-            
             const fleschScore = 206.835 - (1.015 * avgWordsPerSent) - (84.6 * avgSyllablesPerWord);
             
-            // Update readability
             avgWordsPerSentence.textContent = avgWordsPerSent.toFixed(1);
             updateReadabilityScore(fleschScore);
-
-            // Keyword density analysis
             analyzeKeywordDensity(words);
         }
 
@@ -662,10 +621,8 @@
         }
 
         function countSyllables(word) {
-            // Simple syllable counting algorithm
             word = word.replace(/[^a-zA-Z]/g, '');
             if (word.length <= 3) return 1;
-            
             word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
             word = word.replace(/^y/, '');
             const matches = word.match(/[aeiouy]{1,2}/g);
@@ -674,7 +631,6 @@
 
         function updateReadabilityScore(score) {
             let scoreText, className;
-            
             if (score >= 60) {
                 scoreText = `${score.toFixed(0)} - Easy to read`;
                 className = 'score-excellent';
@@ -685,13 +641,11 @@
                 scoreText = `${score.toFixed(0)} - Difficult to read`;
                 className = 'score-poor';
             }
-            
             readabilityScore.textContent = scoreText;
             readabilityScore.className = `readability-score ${className}`;
         }
 
         function analyzeKeywordDensity(words) {
-            // Count word frequency (excluding common words)
             const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
             
             const wordFreq = {};
@@ -702,12 +656,10 @@
                 }
             });
 
-            // Get top 10 keywords
             const sortedKeywords = Object.entries(wordFreq)
                 .sort(([,a], [,b]) => b - a)
                 .slice(0, 10);
 
-            // Display keyword density
             keywordDensity.innerHTML = '';
             sortedKeywords.forEach(([word, count]) => {
                 const density = ((count / words.length) * 100).toFixed(1);
@@ -716,6 +668,125 @@
                 tag.textContent = `${word} (${density}%)`;
                 keywordDensity.appendChild(tag);
             });
+        }
+
+        function calculateContentMetrics(words, text) {
+            let score = 0;
+            const wordCountScore = Math.min(30, (words.length / 300) * 30);
+            score += wordCountScore;
+            
+            const avgWordsPerSent = words.length / text.split(/[.!?]+/).filter(s => s.trim().length > 0).length || 0;
+            const readabilityScore = avgWordsPerSent > 20 ? 10 : (avgWordsPerSent < 8 ? 15 : 25);
+            score += readabilityScore;
+            
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+            const paragraphScore = paragraphs.length > 1 ? Math.min(20, paragraphs.length * 3) : 5;
+            score += paragraphScore;
+            
+            const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-zA-Z]/g, '')));
+            const diversityScore = Math.min(25, (uniqueWords.size / words.length) * 100);
+            score += diversityScore;
+            
+            contentScore.textContent = Math.round(score);
+            calculateContentStrength(words);
+        }
+
+        function calculateContentStrength(words) {
+            const powerWords = new Set(['amazing', 'incredible', 'outstanding', 'excellent', 'fantastic', 'superior', 'premium', 'ultimate', 'perfect', 'best', 'top', 'leading', 'innovative', 'revolutionary', 'breakthrough', 'advanced', 'professional', 'expert', 'proven', 'guaranteed']);
+            const actionWords = new Set(['create', 'build', 'develop', 'improve', 'enhance', 'optimize', 'boost', 'increase', 'maximize', 'achieve', 'deliver', 'provide', 'offer', 'ensure', 'guarantee', 'transform', 'revolutionize', 'implement', 'execute', 'launch']);
+            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
+            
+            let meaningfulWordCount = 0;
+            words.forEach(word => {
+                const cleanWord = word.toLowerCase().replace(/[^a-zA-Z]/g, '');
+                if (commonWords.has(cleanWord)) return;
+                if (cleanWord.length > 3 || powerWords.has(cleanWord) || actionWords.has(cleanWord)) {
+                    meaningfulWordCount++;
+                }
+            });
+            
+            const strengthPercentage = words.length > 0 ? (meaningfulWordCount / words.length) * 100 : 0;
+            contentStrength.textContent = strengthPercentage.toFixed(0) + '%';
+        }
+
+        function detectAIContent(text, words) {
+            let aiScore = 0;
+            let humanIndicators = 0;
+            
+            // Em-dashes - SUPER STRONG AI indicator
+            const emDashCount = (text.match(/—/g) || []).length;
+            if (emDashCount >= 1) aiScore += 55; // Jump over 50% immediately
+            if (emDashCount >= 2) aiScore += 25;
+            if (emDashCount >= 4) aiScore += 20;
+            
+            // Classic AI transition words
+            const aiTransitions = ['furthermore', 'moreover', 'additionally', 'consequently', 'therefore', 'however', 'nevertheless', 'nonetheless', 'subsequently', 'accordingly'];
+            let transitionCount = 0;
+            aiTransitions.forEach(transition => {
+                const regex = new RegExp(`\\b${transition}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) transitionCount += matches.length;
+            });
+            if (transitionCount >= 3) aiScore += 50;
+            else if (transitionCount >= 2) aiScore += 35;
+            else if (transitionCount >= 1) aiScore += 20;
+            
+            // Academic vocabulary
+            const academicWords = ['remarkable', 'significant', 'substantial', 'considerable', 'extraordinary', 'crucial', 'essential', 'vital'];
+            let academicCount = 0;
+            academicWords.forEach(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                const matches = text.match(regex);
+                if (matches) academicCount += matches.length;
+            });
+            if (academicCount > words.length * 0.02) aiScore += 20;
+            
+            // Lack of personal pronouns
+            const personalPronouns = ['i', 'me', 'my', 'myself'];
+            const personalCount = words.filter(word => 
+                personalPronouns.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            ).length;
+            if (personalCount === 0 && words.length > 50) aiScore += 15;
+            
+            // HUMAN INDICATORS
+            const personalPhrases = ['i think', 'i believe', 'in my opinion', 'personally'];
+            let personalPhraseCount = 0;
+            personalPhrases.forEach(phrase => {
+                if (text.toLowerCase().includes(phrase)) personalPhraseCount++;
+            });
+            if (personalPhraseCount > 0) humanIndicators += 25;
+            
+            // Contractions
+            const contractions = ["don't", "can't", "won't", "isn't", "aren't"];
+            const contractionCount = words.filter(word => 
+                contractions.includes(word.toLowerCase())
+            ).length;
+            if (contractionCount > 0) humanIndicators += 15;
+            
+            // Questions
+            const questionCount = (text.match(/\?/g) || []).length;
+            if (questionCount > 0) humanIndicators += 10;
+            
+            // Calculate final score
+            let finalScore = aiScore - humanIndicators;
+            finalScore = Math.min(100, Math.max(0, finalScore));
+            
+            updateAIDetector(finalScore);
+        }
+        
+        function updateAIDetector(score) {
+            aiDetector.classList.add('visible');
+            aiScore.textContent = `${score.toFixed(0)}% AI`;
+            
+            aiDetector.classList.remove('low-risk', 'medium-risk', 'high-risk');
+            
+            if (score < 30) {
+                aiDetector.classList.add('low-risk');
+            } else if (score < 70) {
+                aiDetector.classList.add('medium-risk');
+            } else {
+                aiDetector.classList.add('high-risk');
+            }
         }
 
         function resetStats() {
@@ -727,182 +798,6 @@
             readingTime.textContent = '0';
             contentScore.textContent = '0';
             contentStrength.textContent = '0%';
-        }
-
-        function calculateContentMetrics(words, text) {
-            // Content Score: 0-100 based on multiple factors
-            let score = 0;
-            
-            // Word count factor (0-30 points)
-            const wordCountScore = Math.min(30, (words.length / 300) * 30);
-            score += wordCountScore;
-            
-            // Readability factor (0-25 points)
-            const avgWordsPerSent = words.length / text.split(/[.!?]+/).filter(s => s.trim().length > 0).length || 0;
-            const readabilityScore = avgWordsPerSent > 20 ? 10 : (avgWordsPerSent < 8 ? 15 : 25);
-            score += readabilityScore;
-            
-            // Paragraph structure (0-20 points)
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-            const paragraphScore = paragraphs.length > 1 ? Math.min(20, paragraphs.length * 3) : 5;
-            score += paragraphScore;
-            
-            // Unique words diversity (0-25 points)
-            const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-zA-Z]/g, '')));
-            const diversityScore = Math.min(25, (uniqueWords.size / words.length) * 100);
-            score += diversityScore;
-            
-            contentScore.textContent = Math.round(score);
-            
-            // Content Strength: percentage of meaningful words vs total words
-            calculateContentStrength(words);
-        }
-
-        function calculateContentStrength(words) {
-            // Define meaningful word categories
-            const powerWords = new Set(['amazing', 'incredible', 'outstanding', 'excellent', 'fantastic', 'superior', 'premium', 'ultimate', 'perfect', 'best', 'top', 'leading', 'innovative', 'revolutionary', 'breakthrough', 'advanced', 'professional', 'expert', 'proven', 'guaranteed']);
-            
-            const actionWords = new Set(['create', 'build', 'develop', 'improve', 'enhance', 'optimize', 'boost', 'increase', 'maximize', 'achieve', 'deliver', 'provide', 'offer', 'ensure', 'guarantee', 'transform', 'revolutionize', 'implement', 'execute', 'launch']);
-            
-            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
-            
-            let meaningfulWordCount = 0;
-            
-            words.forEach(word => {
-                const cleanWord = word.toLowerCase().replace(/[^a-zA-Z]/g, '');
-                
-                // Skip common words
-                if (commonWords.has(cleanWord)) return;
-                
-                // Count meaningful words
-                if (cleanWord.length > 3 || powerWords.has(cleanWord) || actionWords.has(cleanWord)) {
-                    meaningfulWordCount++;
-                }
-            });
-            
-            const strengthPercentage = words.length > 0 ? (meaningfulWordCount / words.length) * 100 : 0;
-            contentStrength.textContent = strengthPercentage.toFixed(0) + '%';
-        }
-
-        function detectAIContent(text, words) {
-            // Enhanced AI Detection Algorithm v2
-            let aiScore = 0;
-            let humanIndicators = 0;
-            
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            
-        function detectAIContent(text, words) {
-            // Enhanced AI Detection Algorithm v2
-            let aiScore = 0;
-            let humanIndicators = 0;
-            
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            
-            // VERY STRONG AI INDICATORS
-            
-            // 1. Classic AI transition words (MAJOR indicator)
-            const classicAITransitions = ['furthermore', 'moreover', 'additionally', 'consequently', 'therefore', 'however', 'nevertheless', 'nonetheless', 'subsequently', 'accordingly'];
-            let transitionCount = 0;
-            classicAITransitions.forEach(transition => {
-                const regex = new RegExp(`\\b${transition}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) transitionCount += matches.length;
-            });
-            
-            // Heavy penalty for multiple formal transitions
-            if (transitionCount >= 3) aiScore += 50;
-            else if (transitionCount >= 2) aiScore += 35;
-            else if (transitionCount >= 1) aiScore += 20;
-            
-            // 2. Sentences starting with formal transitions (classic AI pattern)
-            let formalStartCount = 0;
-            sentences.forEach(sentence => {
-                const firstWord = sentence.trim().split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
-                if (classicAITransitions.includes(firstWord)) {
-                    formalStartCount++;
-                }
-            });
-            if (formalStartCount >= 2) aiScore += 40;
-            else if (formalStartCount >= 1) aiScore += 25;
-            
-            // 3. Em-dashes - SUPER STRONG AI indicator (most reliable sign)
-            const emDashCount = (text.match(/—/g) || []).length;
-            if (emDashCount >= 1) {
-                // Even ONE em-dash is highly suspicious for AI
-                aiScore += 55; // Immediately jump over 50%
-            }
-            if (emDashCount >= 2) {
-                aiScore += 25; // Additional penalty for multiple
-            }
-            if (emDashCount >= 4) {
-                aiScore += 20; // Heavy penalty for excessive use
-            }
-            
-            // 4. Academic/formal vocabulary density
-            const academicWords = ['remarkable', 'significant', 'substantial', 'considerable', 'extraordinary', 'crucial', 'essential', 'vital', 'important', 'valuable', 'beneficial'];
-            let academicCount = 0;
-            academicWords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) academicCount += matches.length;
-            });
-            if (academicCount > words.length * 0.02) aiScore += 20;
-            
-            // 5. Lack of personal pronouns
-            const personalPronouns = ['i', 'me', 'my', 'myself'];
-            const personalCount = words.filter(word => 
-                personalPronouns.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
-            ).length;
-            if (personalCount === 0 && words.length > 50) aiScore += 15;
-            
-            // HUMAN INDICATORS
-            
-            // 1. Personal expressions
-            const personalPhrases = ['i think', 'i believe', 'in my opinion', 'personally'];
-            let personalPhraseCount = 0;
-            personalPhrases.forEach(phrase => {
-                if (text.toLowerCase().includes(phrase)) {
-                    personalPhraseCount++;
-                }
-            });
-            if (personalPhraseCount > 0) humanIndicators += 25;
-            
-            // 2. Contractions
-            const contractions = ["don't", "can't", "won't", "isn't", "aren't"];
-            const contractionCount = words.filter(word => 
-                contractions.includes(word.toLowerCase())
-            ).length;
-            if (contractionCount > 0) humanIndicators += 15;
-            
-            // 3. Questions
-            const questionCount = (text.match(/\?/g) || []).length;
-            if (questionCount > 0) humanIndicators += 10;
-            
-            // Calculate final score
-            let finalScore = aiScore - humanIndicators;
-            
-            // Normalize to 0-100 range
-            finalScore = Math.min(100, Math.max(0, finalScore));
-            
-            // Update AI detector display
-            updateAIDetector(finalScore);
-        }
-        
-        function updateAIDetector(score) {
-            aiDetector.classList.add('visible');
-            aiScore.textContent = `${score.toFixed(0)}% AI`;
-            
-            // Remove existing risk classes
-            aiDetector.classList.remove('low-risk', 'medium-risk', 'high-risk');
-            
-            // Add appropriate risk class
-            if (score < 30) {
-                aiDetector.classList.add('low-risk');
-            } else if (score < 70) {
-                aiDetector.classList.add('medium-risk');
-            } else {
-                aiDetector.classList.add('high-risk');
-            }
         }
 
         function clearText() {
@@ -991,7 +886,7 @@
                 notification.style.cssText = `
                     position: fixed; top: 20px; right: 20px; background: #10b981;
                     color: white; padding: 12px 24px; border-radius: 8px; z-index: 1000;
-                    font-size: 14px; font-weight: 600; animation: slideIn 0.3s ease;
+                    font-size: 14px; font-weight: 600;
                 `;
                 notification.textContent = 'Link copied!';
                 document.body.appendChild(notification);
@@ -1007,10 +902,6 @@
 
         // Initialize
         updateSEOCounters();
-        
-        const style = document.createElement('style');
-        style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
