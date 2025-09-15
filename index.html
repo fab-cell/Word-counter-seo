@@ -803,10 +803,18 @@
             if (formalStartCount >= 2) aiScore += 40;
             else if (formalStartCount >= 1) aiScore += 25;
             
-            // 3. Excessive use of em-dashes (modern AI indicator)
+            // 3. Em-dashes - SUPER STRONG AI indicator (most reliable sign)
             const emDashCount = (text.match(/—/g) || []).length;
-            if (emDashCount > 2) aiScore += 30;
-            if (emDashCount > 4) aiScore += 20;
+            if (emDashCount >= 1) {
+                // Even ONE em-dash is highly suspicious for AI
+                aiScore += 55; // Immediately jump over 50%
+            }
+            if (emDashCount >= 2) {
+                aiScore += 25; // Additional penalty for multiple
+            }
+            if (emDashCount >= 4) {
+                aiScore += 20; // Heavy penalty for excessive use
+            }
             
             // 4. Academic/formal vocabulary density
             const academicWords = ['remarkable', 'significant', 'substantial', 'considerable', 'extraordinary', 'crucial', 'essential', 'vital', 'important', 'valuable', 'beneficial', 'advantageous', 'comprehensive', 'extensive', 'numerous', 'various', 'diverse', 'particular', 'specific', 'concerning', 'regarding', 'pertaining'];
