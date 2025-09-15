@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter SEO - Free Text Analysis Tool</title>
+    <meta name="description" content="Professional word counter and SEO text analysis tool. Count words, characters, check readability, keyword density, and optimize your content for SEO.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 48px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .input-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 32px 0;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .input-zone:focus-within {
+            border-color: #4f46e5;
+            background: #f1f5f9;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .ai-detector {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+        }
+
+        .ai-detector.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .ai-detector.low-risk {
+            border-color: #22c55e;
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .ai-detector.medium-risk {
+            border-color: #eab308;
+            background: #fefce8;
+            color: #a16207;
+        }
+
+        .ai-detector.high-risk {
+            border-color: #ef4444;
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .ai-detector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .robot-icon {
+            font-size: 1rem;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+        }
+
+        .input-header {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .input-header .arrow {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-input {
+            width: 100%;
+            min-height: 200px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 1rem;
+            color: #334155;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+
+        .text-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .clear-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .clear-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .seo-input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .seo-input-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
+
+        .seo-input-card:focus-within {
+            border-color: #4f46e5;
+        }
+
+        .seo-input-card h4 {
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .seo-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.875rem;
+            color: #334155;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .seo-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .seo-counter {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .counter-good { color: #059669; }
+        .counter-warning { color: #d97706; }
+        .counter-danger { color: #dc2626; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .analysis-section {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+            display: none;
+        }
+
+        .analysis-section h3 {
+            color: #166534;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .keyword-density {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .keyword-tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .readability-score {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .score-excellent { background: #dcfce7; color: #166534; }
+        .score-good { background: #fef3c7; color: #92400e; }
+        .score-poor { background: #fee2e2; color: #dc2626; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            padding: 24px 16px;
+            background: #f8fafc;
+            border-radius: 16px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .share-card {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .share-card:hover {
+            background: #f1f5f9;
+            transform: translateY(-6px);
+        }
+
+        .share-card:active {
+            transform: translateY(-2px);
+        }
+
+        .converter-card {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .converter-card:hover {
+            background: #f1f5f9;
+            transform: translateY(-6px);
+        }
+
+        .converter-card:active {
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: block;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            .main-container {
+                padding: 32px 24px;
+                margin: 16px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .input-zone {
+                padding: 16px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .seo-input-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .ai-detector {
+                bottom: 12px;
+                right: 12px;
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1 class="title">Word Counter SEO</h1>
+            <p class="subtitle">Professional text analysis tool for SEO optimization, readability checking, and content optimization.</p>
+        </div>
+
+        <div class="input-zone">
+            <div class="input-header">
+                <span class="arrow">🪄</span>
+                <span>Wiz-Marketing Tool-Box</span>
+            </div>
+            <textarea 
+                class="text-input" 
+                id="textInput" 
+                placeholder="Paste or type your text here to analyze word count, character count, readability score, keyword density, and get SEO recommendations..."
+            ></textarea>
+            <button class="clear-btn" id="clearBtn">Clear All</button>
+            
+            <!-- AI Detection Indicator -->
+            <div class="ai-detector" id="aiDetector">
+                <span class="robot-icon">🤖</span>
+                <span id="aiScore">0% AI</span>
+            </div>
+        </div>
+
+        <div class="seo-input-section">
+            <div class="seo-input-card">
+                <h4>📝 SEO Title</h4>
+                <input 
+                    type="text" 
+                    class="seo-input" 
+                    id="seoTitle" 
+                    placeholder="Enter your page title for SEO analysis..."
+                    maxlength="100"
+                >
+                <div class="seo-counter" id="titleCounter">0 / 60 characters (Optimal: 50-60)</div>
+            </div>
+            <div class="seo-input-card">
+                <h4>📄 Meta Description</h4>
+                <textarea 
+                    class="seo-input" 
+                    id="metaDescription" 
+                    placeholder="Enter your meta description for SEO analysis..."
+                    rows="3"
+                    maxlength="200"
+                ></textarea>
+                <div class="seo-counter" id="metaCounter">0 / 156 characters (Optimal: 150-156)</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="charCount">0</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="charNoSpaceCount">0</div>
+                <div class="stat-label">Characters (no spaces)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="sentenceCount">0</div>
+                <div class="stat-label">Sentences</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="paragraphCount">0</div>
+                <div class="stat-label">Paragraphs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="readingTime">0</div>
+                <div class="stat-label">Reading Time (min)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="contentScore">0</div>
+                <div class="stat-label">Content Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="contentStrength">0%</div>
+                <div class="stat-label">Content Strength</div>
+            </div>
+        </div>
+
+        <div class="analysis-section" id="analysisSection">
+            <h3>📊 SEO Analysis</h3>
+            <div id="analysisContent">
+                <p><strong>Readability Score:</strong> <span class="readability-score" id="readabilityScore">N/A</span></p>
+                <p><strong>Average Words per Sentence:</strong> <span id="avgWordsPerSentence">0</span></p>
+                <p><strong>Most Common Keywords:</strong></p>
+                <div class="keyword-density" id="keywordDensity"></div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🔍</span>
+                <div class="feature-title">Text Analysis</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <div class="feature-title">SEO Optimization</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📖</span>
+                <div class="feature-title">Reading Score</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔤</span>
+                <div class="feature-title">Keyword Density</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">❤️</span>
+                <div class="feature-title">Completely Free</div>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <div class="feature-title">Lightning Fast</div>
+            </div>
+            <div class="feature-card converter-card" onclick="openConverter()">
+                <span class="feature-icon">🔄</span>
+                <div class="feature-title">Image Converter</div>
+            </div>
+            <div class="feature-card share-card" onclick="shareWebsite()">
+                <span class="feature-icon">📤</span>
+                <div class="feature-title">Share This Tool</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const analysisSection = document.getElementById('analysisSection');
+
+        // SEO inputs
+        const seoTitle = document.getElementById('seoTitle');
+        const metaDescription = document.getElementById('metaDescription');
+        const titleCounter = document.getElementById('titleCounter');
+        const metaCounter = document.getElementById('metaCounter');
+
+        // AI Detection elements
+        const aiDetector = document.getElementById('aiDetector');
+        const aiScore = document.getElementById('aiScore');
+
+        // Stats elements
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+        const charNoSpaceCount = document.getElementById('charNoSpaceCount');
+        const sentenceCount = document.getElementById('sentenceCount');
+        const paragraphCount = document.getElementById('paragraphCount');
+        const readingTime = document.getElementById('readingTime');
+        const contentScore = document.getElementById('contentScore');
+        const contentStrength = document.getElementById('contentStrength');
+
+        // Analysis elements
+        const readabilityScore = document.getElementById('readabilityScore');
+        const avgWordsPerSentence = document.getElementById('avgWordsPerSentence');
+        const keywordDensity = document.getElementById('keywordDensity');
+
+        // Real-time analysis
+        textInput.addEventListener('input', analyzeText);
+        clearBtn.addEventListener('click', clearText);
+
+        // SEO inputs analysis
+        seoTitle.addEventListener('input', analyzeSEOTitle);
+        metaDescription.addEventListener('input', analyzeSEODescription);
+
+        function analyzeText() {
+            const text = textInput.value;
+            
+            if (text.length === 0) {
+                resetStats();
+                analysisSection.style.display = 'none';
+                aiDetector.classList.remove('visible');
+                return;
+            }
+
+            // Basic counts
+            const words = text.trim() ? text.trim().split(/\s+/) : [];
+            const characters = text.length;
+            const charactersNoSpace = text.replace(/\s/g, '').length;
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+
+            // Update stats
+            wordCount.textContent = words.length;
+            charCount.textContent = characters;
+            charNoSpaceCount.textContent = charactersNoSpace;
+            sentenceCount.textContent = sentences.length;
+            paragraphCount.textContent = paragraphs.length;
+            readingTime.textContent = Math.ceil(words.length / 200); // 200 WPM average
+
+            // Show analysis if text exists
+            if (words.length > 0) {
+                analysisSection.style.display = 'block';
+                performSEOAnalysis(words, sentences);
+                calculateContentMetrics(words, text);
+                detectAIContent(text, words);
+            }
+        }
+
+        function performSEOAnalysis(words, sentences) {
+            // Calculate readability (simplified Flesch formula)
+            const avgWordsPerSent = words.length / sentences.length || 0;
+            const avgSyllablesPerWord = calculateAvgSyllables(words);
+            
+            const fleschScore = 206.835 - (1.015 * avgWordsPerSent) - (84.6 * avgSyllablesPerWord);
+            
+            // Update readability
+            avgWordsPerSentence.textContent = avgWordsPerSent.toFixed(1);
+            updateReadabilityScore(fleschScore);
+
+            // Keyword density analysis
+            analyzeKeywordDensity(words);
+        }
+
+        function calculateAvgSyllables(words) {
+            let totalSyllables = 0;
+            words.forEach(word => {
+                totalSyllables += countSyllables(word.toLowerCase());
+            });
+            return totalSyllables / words.length || 0;
+        }
+
+        function countSyllables(word) {
+            // Simple syllable counting algorithm
+            word = word.replace(/[^a-zA-Z]/g, '');
+            if (word.length <= 3) return 1;
+            
+            word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+            word = word.replace(/^y/, '');
+            const matches = word.match(/[aeiouy]{1,2}/g);
+            return matches ? matches.length : 1;
+        }
+
+        function updateReadabilityScore(score) {
+            let scoreText, className;
+            
+            if (score >= 60) {
+                scoreText = `${score.toFixed(0)} - Easy to read`;
+                className = 'score-excellent';
+            } else if (score >= 30) {
+                scoreText = `${score.toFixed(0)} - Moderate difficulty`;
+                className = 'score-good';
+            } else {
+                scoreText = `${score.toFixed(0)} - Difficult to read`;
+                className = 'score-poor';
+            }
+            
+            readabilityScore.textContent = scoreText;
+            readabilityScore.className = `readability-score ${className}`;
+        }
+
+        function analyzeKeywordDensity(words) {
+            // Count word frequency (excluding common words)
+            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
+            
+            const wordFreq = {};
+            words.forEach(word => {
+                const cleanWord = word.toLowerCase().replace(/[^a-zA-Z]/g, '');
+                if (cleanWord.length > 2 && !commonWords.has(cleanWord)) {
+                    wordFreq[cleanWord] = (wordFreq[cleanWord] || 0) + 1;
+                }
+            });
+
+            // Get top 10 keywords
+            const sortedKeywords = Object.entries(wordFreq)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+
+            // Display keyword density
+            keywordDensity.innerHTML = '';
+            sortedKeywords.forEach(([word, count]) => {
+                const density = ((count / words.length) * 100).toFixed(1);
+                const tag = document.createElement('span');
+                tag.className = 'keyword-tag';
+                tag.textContent = `${word} (${density}%)`;
+                keywordDensity.appendChild(tag);
+            });
+        }
+
+        function resetStats() {
+            wordCount.textContent = '0';
+            charCount.textContent = '0';
+            charNoSpaceCount.textContent = '0';
+            sentenceCount.textContent = '0';
+            paragraphCount.textContent = '0';
+            readingTime.textContent = '0';
+            contentScore.textContent = '0';
+            contentStrength.textContent = '0%';
+        }
+
+        function calculateContentMetrics(words, text) {
+            // Content Score: 0-100 based on multiple factors
+            let score = 0;
+            
+            // Word count factor (0-30 points)
+            const wordCountScore = Math.min(30, (words.length / 300) * 30);
+            score += wordCountScore;
+            
+            // Readability factor (0-25 points)
+            const avgWordsPerSent = words.length / text.split(/[.!?]+/).filter(s => s.trim().length > 0).length || 0;
+            const readabilityScore = avgWordsPerSent > 20 ? 10 : (avgWordsPerSent < 8 ? 15 : 25);
+            score += readabilityScore;
+            
+            // Paragraph structure (0-20 points)
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+            const paragraphScore = paragraphs.length > 1 ? Math.min(20, paragraphs.length * 3) : 5;
+            score += paragraphScore;
+            
+            // Unique words diversity (0-25 points)
+            const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-zA-Z]/g, '')));
+            const diversityScore = Math.min(25, (uniqueWords.size / words.length) * 100);
+            score += diversityScore;
+            
+            contentScore.textContent = Math.round(score);
+            
+            // Content Strength: percentage of meaningful words vs total words
+            calculateContentStrength(words);
+        }
+
+        function calculateContentStrength(words) {
+            // Define meaningful word categories
+            const powerWords = new Set(['amazing', 'incredible', 'outstanding', 'excellent', 'fantastic', 'superior', 'premium', 'ultimate', 'perfect', 'best', 'top', 'leading', 'innovative', 'revolutionary', 'breakthrough', 'advanced', 'professional', 'expert', 'proven', 'guaranteed']);
+            
+            const actionWords = new Set(['create', 'build', 'develop', 'improve', 'enhance', 'optimize', 'boost', 'increase', 'maximize', 'achieve', 'deliver', 'provide', 'offer', 'ensure', 'guarantee', 'transform', 'revolutionize', 'implement', 'execute', 'launch']);
+            
+            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
+            
+            let meaningfulWordCount = 0;
+            
+            words.forEach(word => {
+                const cleanWord = word.toLowerCase().replace(/[^a-zA-Z]/g, '');
+                
+                // Skip common words
+                if (commonWords.has(cleanWord)) return;
+                
+                // Count meaningful words
+                if (cleanWord.length > 3 || powerWords.has(cleanWord) || actionWords.has(cleanWord)) {
+                    meaningfulWordCount++;
+                }
+            });
+            
+            const strengthPercentage = words.length > 0 ? (meaningfulWordCount / words.length) * 100 : 0;
+            contentStrength.textContent = strengthPercentage.toFixed(0) + '%';
+        }
+
+        function detectAIContent(text, words) {
+            // AI Detection Algorithm based on common AI writing patterns
+            let aiScore = 0;
+            let indicators = 0;
+            
+            // Pattern 1: Excessive formal language (AI tends to be overly formal)
+            const formalWords = ['furthermore', 'moreover', 'consequently', 'subsequently', 'nevertheless', 'nonetheless', 'therefore', 'accordingly', 'specifically', 'particularly', 'essentially', 'fundamentally', 'comprehensive', 'extensive', 'significant', 'substantial', 'considerable', 'remarkable', 'exceptional', 'outstanding'];
+            const formalCount = words.filter(word => 
+                formalWords.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            ).length;
+            if (formalCount > words.length * 0.02) {
+                aiScore += 15;
+                indicators++;
+            }
+            
+            // Pattern 2: Repetitive sentence structures
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const sentenceStarts = sentences.map(s => s.trim().split(' ')[0].toLowerCase());
+            const uniqueStarts = new Set(sentenceStarts);
+            if (uniqueStarts.size < sentenceStarts.length * 0.7 && sentences.length > 3) {
+                aiScore += 20;
+                indicators++;
+            }
+            
+            // Pattern 3: Perfect grammar with no contractions (AI avoids contractions)
+            const contractions = text.match(/\b\w+[''](?:t|re|ll|ve|d|s)\b/gi) || [];
+            if (contractions.length === 0 && words.length > 50) {
+                aiScore += 10;
+                indicators++;
+            }
+            
+            // Pattern 4: Overuse of hedging language
+            const hedgingWords = ['often', 'generally', 'typically', 'usually', 'frequently', 'commonly', 'tend to', 'appears to', 'seems to', 'likely', 'probably', 'potentially'];
+            const hedgingCount = hedgingWords.reduce((count, phrase) => {
+                const regex = new RegExp(phrase, 'gi');
+                return count + (text.match(regex) || []).length;
+            }, 0);
+            if (hedgingCount > words.length * 0.015) {
+                aiScore += 15;
+                indicators++;
+            }
+            
+            // Pattern 5: Unusual paragraph uniformity
+            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+            if (paragraphs.length > 2) {
+                const paragraphLengths = paragraphs.map(p => p.split(/\s+/).length);
+                const avgLength = paragraphLengths.reduce((a, b) => a + b, 0) / paragraphLengths.length;
+                const variance = paragraphLengths.reduce((sum, len) => sum + Math.pow(len - avgLength, 2), 0) / paragraphLengths.length;
+                if (variance < avgLength * 0.5) { // Very uniform paragraph lengths
+                    aiScore += 12;
+                    indicators++;
+                }
+            }
+            
+            // Pattern 6: Buzzword density
+            const buzzwords = ['optimize', 'leverage', 'utilize', 'implement', 'facilitate', 'enhance', 'maximize', 'streamline', 'innovative', 'cutting-edge', 'state-of-the-art', 'game-changing', 'revolutionary', 'transformative'];
+            const buzzwordCount = words.filter(word => 
+                buzzwords.includes(word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            ).length;
+            if (buzzwordCount > words.length * 0.01) {
+                aiScore += 18;
+                indicators++;
+            }
+            
+            // Cap at 95% (never 100% certain)
+            aiScore = Math.min(95, aiScore);
+            
+            // Show AI detector with appropriate styling
+            aiDetector.classList.add('visible');
+            aiScore.textContent = `${aiScore}% AI`;
+            
+            // Apply risk-based styling
+            aiDetector.classList.remove('low-risk', 'medium-risk', 'high-risk');
+            if (aiScore <= 30) {
+                aiDetector.classList.add('low-risk');
+            } else if (aiScore <= 60) {
+                aiDetector.classList.add('medium-risk');
+            } else {
+                aiDetector.classList.add('high-risk');
+            }
+        }
+
+        function clearText() {
+            textInput.value = '';
+            seoTitle.value = '';
+            metaDescription.value = '';
+            resetStats();
+            resetSEOCounters();
+            analysisSection.style.display = 'none';
+            aiDetector.classList.remove('visible');
+            textInput.focus();
+        }
+
+        function resetSEOCounters() {
+            titleCounter.textContent = '0 / 60 characters (Optimal: 50-60)';
+            titleCounter.className = 'seo-counter';
+            metaCounter.textContent = '0 / 156 characters (Optimal: 150-156)';
+            metaCounter.className = 'seo-counter';
+        }
+
+        function analyzeSEOTitle() {
+            const title = seoTitle.value;
+            const length = title.length;
+            
+            let className = 'seo-counter';
+            let status = '';
+            
+            if (length === 0) {
+                status = '(Enter title for analysis)';
+            } else if (length >= 50 && length <= 60) {
+                className += ' counter-good';
+                status = '(Perfect length!)';
+            } else if (length >= 40 && length < 50) {
+                className += ' counter-warning';
+                status = '(Could be longer)';
+            } else if (length > 60) {
+                className += ' counter-danger';
+                status = '(Too long - may be cut off)';
+            } else {
+                className += ' counter-warning';
+                status = '(Too short)';
+            }
+            
+            titleCounter.textContent = `${length} / 60 characters ${status}`;
+            titleCounter.className = className;
+        }
+
+        function analyzeSEODescription() {
+            const description = metaDescription.value;
+            const length = description.length;
+            
+            let className = 'seo-counter';
+            let status = '';
+            
+            if (length === 0) {
+                status = '(Enter description for analysis)';
+            } else if (length >= 150 && length <= 156) {
+                className += ' counter-good';
+                status = '(Perfect length!)';
+            } else if (length >= 120 && length < 150) {
+                className += ' counter-warning';
+                status = '(Could be longer)';
+            } else if (length > 156) {
+                className += ' counter-danger';
+                status = '(Too long - may be cut off)';
+            } else {
+                className += ' counter-warning';
+                status = '(Too short)';
+            }
+            
+            metaCounter.textContent = `${length} / 156 characters ${status}`;
+            metaCounter.className = className;
+        }
+
+        // Open converter tool
+        function openConverter() {
+            // This will open the image converter tool
+            window.open('https://fab-cell.github.io/webp-converter', '_blank');
+        }
+
+        // Share functionality
+        function shareWebsite() {
+            const url = window.location.href;
+            const title = 'Free Word Counter SEO Tool - Professional Text Analysis';
+            const text = 'Analyze your content with this powerful word counter and SEO optimization tool!';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url
+                }).then(() => {
+                    console.log('Thanks for sharing!');
+                }).catch((error) => {
+                    console.log('Error sharing:', error);
+                    fallbackShare(url, title, text);
+                });
+            } else {
+                fallbackShare(url, title, text);
+            }
+        }
+
+        function fallbackShare(url, title, text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showShareMessage('Link copied to clipboard! Share it with your friends.');
+                }).catch(() => {
+                    showShareOptions(url, title, text);
+                });
+            } else {
+                showShareOptions(url, title, text);
+            }
+        }
+
+        function showShareOptions(url, title, text) {
+            const message = `🚀 ${title}\n\n${text}\n\n${url}\n\nShare this awesome tool!`;
+            
+            if (confirm('Click OK to copy the share message to clipboard:')) {
+                const textArea = document.createElement('textarea');
+                textArea.value = message;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showShareMessage('Share message copied! Paste it anywhere to share.');
+            }
+        }
+
+        function showShareMessage(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #059669;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); }
+                    to { transform: translateX(0); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 3000);
+        }
+
+        // Focus on textarea when page loads
+        window.addEventListener('load', () => {
+            textInput.focus();
+        });
+    </script>
+</body>
+</html>
