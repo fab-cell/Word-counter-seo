@@ -333,7 +333,7 @@
                 <span class="feature-icon">🎨</span>
                 <div class="feature-title">Text Formatting</div>
             </div>
-            <div class="feature-card">
+            <div class="feature-card" onclick="shareWebsite()">
                 <span class="feature-icon">📤</span>
                 <div class="feature-title">Share This Tool</div>
             </div>
@@ -351,6 +351,44 @@
 
     <script>
         let analysis = {};
+
+        document.getElementById('textInput').addEventListener('input', analyze);
+        document.getElementById('seoTitle').addEventListener('input', analyzeSEO);
+        document.getElementById('metaDescription').addEventListener('input', analyzeSEO);
+
+        function shareWebsite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Word Counter SEO - Free Text Analysis Tool',
+                    text: 'Professional word counter with AI detection and SEO analysis',
+                    url: window.location.href
+                }).catch(() => fallbackShare());
+            } else {
+                fallbackShare();
+            }
+        }
+
+        function fallbackShare() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showNotification('Link copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this link:', window.location.href);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; background: #10b981;
+                color: white; padding: 12px 24px; border-radius: 8px; z-index: 1001;
+                font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
 
         document.getElementById('textInput').addEventListener('input', analyze);
         document.getElementById('seoTitle').addEventListener('input', analyzeSEO);
