@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Counter SEO - Free Text Analysis Tool</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
@@ -20,7 +15,6 @@
             justify-content: center;
             padding: 20px;
         }
-
         .container {
             background: white;
             border-radius: 24px;
@@ -30,7 +24,6 @@
             width: 100%;
             text-align: center;
         }
-
         .title {
             font-size: 2.5rem;
             font-weight: 800;
@@ -39,13 +32,11 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 12px;
         }
-
         .subtitle {
             font-size: 1.125rem;
             color: #64748b;
             margin-bottom: 20px;
         }
-
         .info-box {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -56,7 +47,6 @@
             color: #166534;
             text-align: left;
         }
-
         .input-area {
             border: 2px dashed #cbd5e1;
             border-radius: 16px;
@@ -65,7 +55,6 @@
             background: #f8fafc;
             position: relative;
         }
-
         .input-header {
             font-size: 0.9rem;
             font-weight: 500;
@@ -74,7 +63,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .text-input {
             width: 100%;
             min-height: 200px;
@@ -86,7 +74,6 @@
             resize: vertical;
             font-family: inherit;
         }
-
         .clear-btn {
             background: #10b981;
             color: white;
@@ -97,7 +84,6 @@
             cursor: pointer;
             margin-top: 16px;
         }
-
         .ai-detector {
             position: absolute;
             bottom: 16px;
@@ -111,26 +97,56 @@
             opacity: 0;
             transition: all 0.3s;
         }
-
         .ai-detector.visible { opacity: 1; }
         .ai-detector.low { border-color: #22c55e; background: #f0fdf4; color: #166534; }
         .ai-detector.medium { border-color: #eab308; background: #fefce8; color: #a16207; }
         .ai-detector.high { border-color: #ef4444; background: #fef2f2; color: #dc2626; }
-
+        
+        .seo-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .seo-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+        }
+        .seo-card h4 {
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .seo-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.875rem;
+            color: #334155;
+            font-family: inherit;
+        }
+        .seo-counter {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 20px;
             margin: 32px 0;
         }
-
         .stat-card {
             background: #f8fafc;
             border-radius: 16px;
             padding: 20px;
             text-align: center;
         }
-
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
@@ -139,26 +155,38 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
-
         .stat-label {
             color: #64748b;
             font-size: 0.875rem;
         }
-
+        
+        .analysis {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+            display: none;
+        }
+        .analysis h3 {
+            color: #166534;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 24px;
             margin-top: 40px;
         }
-
         .feature-card {
             padding: 24px 16px;
             background: #f8fafc;
             border-radius: 16px;
             text-align: center;
         }
-
         .feature-icon {
             font-size: 2rem;
             margin-bottom: 12px;
@@ -167,13 +195,12 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
         .feature-title {
             font-weight: 600;
             color: #334155;
             font-size: 0.875rem;
         }
-
+        
         .modal {
             position: fixed;
             top: 0;
@@ -186,7 +213,6 @@
             justify-content: center;
             z-index: 1000;
         }
-
         .modal-content {
             background: white;
             border-radius: 16px;
@@ -196,47 +222,14 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-
-        .modal h3 {
-            margin-bottom: 16px;
-            color: #334155;
-        }
-
-        .close-btn {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #64748b;
-        }
-
-        .breakdown {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 16px 0;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
+        .modal h3 { margin-bottom: 16px; color: #334155; }
+        .close-btn { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; }
+        .breakdown { background: #f8fafc; border-radius: 8px; padding: 16px; margin: 16px 0; }
+        .breakdown-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #e2e8f0; }
         .breakdown-item:last-child { border-bottom: none; }
         .positive { color: #dc2626; font-weight: 600; }
         .negative { color: #059669; font-weight: 600; }
-
-        .verdict {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 8px;
-            padding: 12px;
-            color: #166534;
-            margin-top: 16px;
-        }
+        .verdict { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px; color: #166534; margin-top: 16px; }
     </style>
 </head>
 <body>
@@ -249,44 +242,22 @@
         </div>
 
         <div class="input-area">
-            <div class="input-header">
-                🪄 Wiz-Marketing Tool-Box
-            </div>
-            <textarea 
-                class="text-input" 
-                id="textInput" 
-                placeholder="Paste or type your text here to analyze..."
-            ></textarea>
+            <div class="input-header">🪄 Wiz-Marketing Tool-Box</div>
+            <textarea class="text-input" id="textInput" placeholder="Paste or type your text here to analyze..."></textarea>
             <button class="clear-btn" onclick="clearAll()">Clear All</button>
-            
-            <div class="ai-detector" id="aiDetector" onclick="showModal()">
-                🤖 <span id="aiScore">0% AI</span>
-            </div>
+            <div class="ai-detector" id="aiDetector" onclick="showModal()">🤖 <span id="aiScore">0% AI</span></div>
         </div>
 
-        <!-- SEO Input Section -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0;">
-            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
-                <h4 style="color: #334155; margin-bottom: 8px; font-size: 0.875rem; font-weight: 600;">📝 SEO Title</h4>
-                <input 
-                    type="text" 
-                    id="seoTitle" 
-                    placeholder="Enter your page title for SEO analysis..."
-                    maxlength="100"
-                    style="width: 100%; border: none; outline: none; background: transparent; font-size: 0.875rem; color: #334155; font-family: inherit;"
-                >
-                <div id="titleCounter" style="margin-top: 8px; font-size: 0.75rem; font-weight: 500; color: #64748b;">0 / 60 characters (Optimal: 50-60)</div>
+        <div class="seo-section">
+            <div class="seo-card">
+                <h4>📝 SEO Title</h4>
+                <input type="text" id="seoTitle" class="seo-input" placeholder="Enter your page title..." maxlength="100">
+                <div id="titleCounter" class="seo-counter">0 / 60 characters (Optimal: 50-60)</div>
             </div>
-            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; border: 2px solid #e2e8f0;">
-                <h4 style="color: #334155; margin-bottom: 8px; font-size: 0.875rem; font-weight: 600;">📄 Meta Description</h4>
-                <textarea 
-                    id="metaDescription" 
-                    placeholder="Enter your meta description for SEO analysis..."
-                    rows="3"
-                    maxlength="200"
-                    style="width: 100%; border: none; outline: none; background: transparent; font-size: 0.875rem; color: #334155; resize: none; font-family: inherit;"
-                ></textarea>
-                <div id="metaCounter" style="margin-top: 8px; font-size: 0.75rem; font-weight: 500; color: #64748b;">0 / 156 characters (Optimal: 150-156)</div>
+            <div class="seo-card">
+                <h4>📄 Meta Description</h4>
+                <textarea id="metaDescription" class="seo-input" placeholder="Enter your meta description..." rows="3" maxlength="200"></textarea>
+                <div id="metaCounter" class="seo-counter">0 / 156 characters (Optimal: 150-156)</div>
             </div>
         </div>
 
@@ -325,10 +296,9 @@
             </div>
         </div>
 
-        <!-- SEO Analysis Section -->
-        <div id="analysisSection" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: left; display: none;">
-            <h3 style="color: #166534; margin-bottom: 16px; font-weight: 600;">📊 SEO Analysis</h3>
-            <p><strong>Readability Score:</strong> <span id="readabilityScore" style="display: inline-block; padding: 8px 16px; border-radius: 8px; font-weight: 600; margin-top: 8px;">N/A</span></p>
+        <div class="analysis" id="analysisSection">
+            <h3>📊 SEO Analysis</h3>
+            <p><strong>Readability Score:</strong> <span id="readabilityScore">N/A</span></p>
             <p><strong>Average Words per Sentence:</strong> <span id="avgWordsPerSentence">0</span></p>
             <p><strong>Most Common Keywords:</strong></p>
             <div id="keywordDensity" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;"></div>
@@ -400,6 +370,7 @@
             const sentences = text.split(/[.!?]+/).filter(s => s.trim());
             const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim());
 
+            // Update basic stats
             document.getElementById('words').textContent = words.length;
             document.getElementById('chars').textContent = chars;
             document.getElementById('charsNoSpace').textContent = charsNoSpace;
@@ -407,25 +378,77 @@
             document.getElementById('paragraphs').textContent = paragraphs.length;
             document.getElementById('readTime').textContent = Math.ceil(words.length / 200);
 
+            // Content Score (0-100)
+            let score = Math.min(30, (words.length / 300) * 30);
+            score += sentences.length > 0 ? (words.length / sentences.length > 20 ? 10 : 25) : 0;
+            score += paragraphs.length > 1 ? Math.min(20, paragraphs.length * 3) : 5;
+            const unique = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, '')));
+            score += Math.min(25, (unique.size / words.length) * 100);
+            document.getElementById('contentScore').textContent = Math.round(score);
+
+            // Content Strength (%)
+            const power = ['amazing', 'excellent', 'perfect', 'best', 'top', 'leading'];
+            const common = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'];
+            let meaningful = 0;
+            words.forEach(word => {
+                const clean = word.toLowerCase().replace(/[^a-z]/g, '');
+                if (!common.includes(clean) && (clean.length > 3 || power.includes(clean))) {
+                    meaningful++;
+                }
+            });
+            const strength = (meaningful / words.length) * 100;
+            document.getElementById('contentStrength').textContent = Math.round(strength) + '%';
+
             if (words.length > 0) {
                 document.getElementById('analysisSection').style.display = 'block';
-                performSEOAnalysis(words, sentences);
-                calculateContentMetrics(words, text);
+                performSEO(words, sentences);
                 detectAI(text, words);
             }
         }
 
-        function performSEOAnalysis(words, sentences) {
-            const avgWordsPerSent = words.length / sentences.length || 0;
-            const avgSyllables = words.reduce((total, word) => total + countSyllables(word), 0) / words.length || 0;
-            const fleschScore = 206.835 - (1.015 * avgWordsPerSent) - (84.6 * avgSyllables);
+        function performSEO(words, sentences) {
+            const avgWords = words.length / sentences.length || 0;
+            const avgSyll = words.reduce((total, word) => total + countSyll(word), 0) / words.length || 0;
+            const flesch = 206.835 - (1.015 * avgWords) - (84.6 * avgSyll);
             
-            document.getElementById('avgWordsPerSentence').textContent = avgWordsPerSent.toFixed(1);
-            updateReadabilityScore(fleschScore);
-            analyzeKeywords(words);
+            document.getElementById('avgWordsPerSentence').textContent = avgWords.toFixed(1);
+            
+            const scoreEl = document.getElementById('readabilityScore');
+            if (flesch >= 60) {
+                scoreEl.textContent = flesch.toFixed(0) + ' - Easy to read';
+                scoreEl.style.cssText = 'background: #dcfce7; color: #166534; padding: 8px 16px; border-radius: 8px;';
+            } else if (flesch >= 30) {
+                scoreEl.textContent = flesch.toFixed(0) + ' - Moderate';
+                scoreEl.style.cssText = 'background: #fef3c7; color: #92400e; padding: 8px 16px; border-radius: 8px;';
+            } else {
+                scoreEl.textContent = flesch.toFixed(0) + ' - Difficult';
+                scoreEl.style.cssText = 'background: #fee2e2; color: #dc2626; padding: 8px 16px; border-radius: 8px;';
+            }
+
+            // Keywords
+            const common = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they']);
+            const wordFreq = {};
+            words.forEach(word => {
+                const clean = word.toLowerCase().replace(/[^a-z]/g, '');
+                if (clean.length > 2 && !common.has(clean)) {
+                    wordFreq[clean] = (wordFreq[clean] || 0) + 1;
+                }
+            });
+
+            const sorted = Object.entries(wordFreq).sort(([,a], [,b]) => b - a).slice(0, 10);
+            const container = document.getElementById('keywordDensity');
+            container.innerHTML = '';
+            
+            sorted.forEach(([word, count]) => {
+                const density = ((count / words.length) * 100).toFixed(1);
+                const tag = document.createElement('span');
+                tag.style.cssText = 'background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem;';
+                tag.textContent = `${word} (${density}%)`;
+                container.appendChild(tag);
+            });
         }
 
-        function countSyllables(word) {
+        function countSyll(word) {
             word = word.toLowerCase().replace(/[^a-z]/g, '');
             if (word.length <= 3) return 1;
             word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
@@ -433,164 +456,28 @@
             return matches ? matches.length : 1;
         }
 
-        function updateReadabilityScore(score) {
-            const scoreEl = document.getElementById('readabilityScore');
-            let text, bg, color;
-            
-            if (score >= 60) {
-                text = `${score.toFixed(0)} - Easy to read`;
-                bg = '#dcfce7'; color = '#166534';
-            } else if (score >= 30) {
-                text = `${score.toFixed(0)} - Moderate difficulty`;
-                bg = '#fef3c7'; color = '#92400e';
-            } else {
-                text = `${score.toFixed(0)} - Difficult to read`;
-                bg = '#fee2e2'; color = '#dc2626';
-            }
-            
-            scoreEl.textContent = text;
-            scoreEl.style.background = bg;
-            scoreEl.style.color = color;
-        }
-
-        function analyzeKeywords(words) {
-            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
-            
-            const wordFreq = {};
-            words.forEach(word => {
-                const clean = word.toLowerCase().replace(/[^a-z]/g, '');
-                if (clean.length > 2 && !commonWords.has(clean)) {
-                    wordFreq[clean] = (wordFreq[clean] || 0) + 1;
-                }
-            });
-
-            const sorted = Object.entries(wordFreq)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 10);
-
-            const container = document.getElementById('keywordDensity');
-            container.innerHTML = '';
-            
-            sorted.forEach(([word, count]) => {
-                const density = ((count / words.length) * 100).toFixed(1);
-                const tag = document.createElement('span');
-                tag.style.cssText = 'background: #e0e7ff; color: #3730a3; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;';
-                tag.textContent = `${word} (${density}%)`;
-                container.appendChild(tag);
-            });
-        }
-
-        function calculateContentMetrics(words, text) {
-            // Content Score calculation
-            let score = Math.min(30, (words.length / 300) * 30);
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim());
-            const avgWordsPerSent = words.length / sentences.length || 0;
-            score += avgWordsPerSent > 20 ? 10 : avgWordsPerSent < 8 ? 15 : 25;
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim());
-            score += paragraphs.length > 1 ? Math.min(20, paragraphs.length * 3) : 5;
-            const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, '')));
-            score += Math.min(25, (uniqueWords.size / words.length) * 100);
-            
-            document.getElementById('contentScore').textContent = Math.round(score);
-            
-            // Content Strength calculation
-            const powerWords = new Set(['amazing', 'incredible', 'outstanding', 'excellent', 'fantastic', 'superior', 'premium', 'ultimate', 'perfect', 'best', 'top', 'leading']);
-            const actionWords = new Set(['create', 'build', 'develop', 'improve', 'enhance', 'optimize', 'boost', 'increase', 'maximize', 'achieve']);
-            const commonWords = new Set(['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
-            
-            let meaningful = 0;
-            words.forEach(word => {
-                const clean = word.toLowerCase().replace(/[^a-z]/g, '');
-                if (!commonWords.has(clean) && (clean.length > 3 || powerWords.has(clean) || actionWords.has(clean))) {
-                    meaningful++;
-                }
-            });
-            
-            const strength = words.length > 0 ? (meaningful / words.length) * 100 : 0;
-            document.getElementById('contentStrength').textContent = strength.toFixed(0) + '%';
-        }
-
-        function analyzeSEO() {
-            const title = document.getElementById('seoTitle').value;
-            const meta = document.getElementById('metaDescription').value;
-            
-            // Title
-            const titleLen = title.length;
-            const titleEl = document.getElementById('titleCounter');
-            let titleColor = '#059669';
-            let titleMsg = `${titleLen} / 60 characters (Optimal: 50-60)`;
-            
-            if (titleLen === 0 || titleLen < 30 || titleLen > 60) {
-                titleColor = '#dc2626';
-                titleMsg = titleLen < 30 ? `${titleLen} / 60 characters (Too short)` : `${titleLen} / 60 characters (Too long)`;
-            }
-            
-            titleEl.textContent = titleMsg;
-            titleEl.style.color = titleColor;
-            
-            // Meta
-            const metaLen = meta.length;
-            const metaEl = document.getElementById('metaCounter');
-            let metaColor = '#059669';
-            let metaMsg = `${metaLen} / 156 characters (Optimal: 150-156)`;
-            
-            if (metaLen === 0 || metaLen < 120 || metaLen > 156) {
-                metaColor = metaLen < 120 && metaLen > 0 ? '#d97706' : '#dc2626';
-                metaMsg = metaLen < 120 && metaLen > 0 ? `${metaLen} / 156 characters (Consider adding more)` : `${metaLen} / 156 characters ${metaLen === 0 ? '(Required)' : '(Too long)'}`;
-            }
-            
-            metaEl.textContent = metaMsg;
-            metaEl.style.color = metaColor;
-        }
-
-        function analyze() {
-            const text = document.getElementById('textInput').value;
-            
-            if (!text.trim()) {
-                reset();
-                return;
-            }
-
-            const words = text.trim().split(/\s+/);
-            const chars = text.length;
-            const charsNoSpace = text.replace(/\s/g, '').length;
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim());
-            const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim());
-
-            document.getElementById('words').textContent = words.length;
-            document.getElementById('chars').textContent = chars;
-            document.getElementById('charsNoSpace').textContent = charsNoSpace;
-            document.getElementById('sentences').textContent = sentences.length;
-            document.getElementById('paragraphs').textContent = paragraphs.length;
-            document.getElementById('readTime').textContent = Math.ceil(words.length / 200);
-
-            detectAI(text, words);
-        }
-
         function detectAI(text, words) {
             let score = 0;
             let breakdown = [];
 
-            // Em-dashes and En-dashes
-            const longDashes = (text.match(/—/g) || []).length;  // Em-dash
-            const mediumDashes = (text.match(/–/g) || []).length; // En-dash
-            
+            // Em-dashes (—)
+            const longDashes = (text.match(/—/g) || []).length;
             if (longDashes > 0) {
                 let dashScore = 90 + (longDashes >= 2 ? 10 : 0);
                 score += dashScore;
                 breakdown.push([`Em-dashes (${longDashes})`, `+${dashScore}`, 'positive']);
             }
-            
+
+            // En-dashes (–)
+            const mediumDashes = (text.match(/–/g) || []).length;
             if (mediumDashes > 0) {
                 let mediumScore = 25 + (mediumDashes >= 2 ? 15 : 0);
                 score += mediumScore;
                 breakdown.push([`En-dashes (${mediumDashes})`, `+${mediumScore}`, 'positive']);
             }
 
-            // Excessive emoji usage
+            // Emojis
             const emojis = (text.match(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu) || []).length;
-            
-            // Check for emojis in titles/headings (lines that start with emojis)
             const emojiHeaders = (text.match(/^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gmu) || []).length;
             
             if (emojis > 0) {
@@ -608,7 +495,6 @@
                     breakdown.push([`Multiple emojis (${emojis})`, '+10', 'positive']);
                 }
                 
-                // Additional penalty for emojis in headers/titles
                 if (emojiHeaders > 0) {
                     emojiScore += 20;
                     breakdown.push([`Emojis in headers (${emojiHeaders})`, '+20', 'positive']);
@@ -621,8 +507,7 @@
             const transitions = ['furthermore', 'moreover', 'additionally', 'consequently', 'therefore', 'however'];
             let transCount = 0;
             transitions.forEach(word => {
-                const matches = (text.toLowerCase().match(new RegExp(`\\b${word}\\b`, 'g')) || []).length;
-                transCount += matches;
+                transCount += (text.toLowerCase().match(new RegExp(`\\b${word}\\b`, 'g')) || []).length;
             });
             
             if (transCount > 0) {
@@ -677,12 +562,11 @@
             }
 
             const finalScore = Math.max(0, Math.min(100, score));
-            
             analysis = { score: finalScore, breakdown: breakdown };
-            updateDisplay(finalScore);
+            updateAIDisplay(finalScore);
         }
 
-        function updateDisplay(score) {
+        function updateAIDisplay(score) {
             const detector = document.getElementById('aiDetector');
             document.getElementById('aiScore').textContent = Math.round(score) + '% AI';
             
@@ -692,6 +576,25 @@
             if (score < 30) detector.classList.add('low');
             else if (score < 70) detector.classList.add('medium');
             else detector.classList.add('high');
+        }
+
+        function analyzeSEO() {
+            const title = document.getElementById('seoTitle').value;
+            const meta = document.getElementById('metaDescription').value;
+            
+            // Title
+            const titleLen = title.length;
+            const titleEl = document.getElementById('titleCounter');
+            let titleColor = titleLen >= 30 && titleLen <= 60 ? '#059669' : '#dc2626';
+            titleEl.textContent = `${titleLen} / 60 characters (Optimal: 50-60)`;
+            titleEl.style.color = titleColor;
+            
+            // Meta
+            const metaLen = meta.length;
+            const metaEl = document.getElementById('metaCounter');
+            let metaColor = metaLen >= 120 && metaLen <= 156 ? '#059669' : metaLen > 0 ? '#d97706' : '#dc2626';
+            metaEl.textContent = `${metaLen} / 156 characters (Optimal: 150-156)`;
+            metaEl.style.color = metaColor;
         }
 
         function showModal() {
@@ -730,13 +633,9 @@
         }
 
         function reset() {
-            document.getElementById('words').textContent = '0';
-            document.getElementById('chars').textContent = '0';
-            document.getElementById('charsNoSpace').textContent = '0';
-            document.getElementById('sentences').textContent = '0';
-            document.getElementById('paragraphs').textContent = '0';
-            document.getElementById('readTime').textContent = '0';
-            document.getElementById('contentScore').textContent = '0';
+            ['words', 'chars', 'charsNoSpace', 'sentences', 'paragraphs', 'readTime', 'contentScore'].forEach(id => {
+                document.getElementById(id).textContent = '0';
+            });
             document.getElementById('contentStrength').textContent = '0%';
             document.getElementById('aiDetector').classList.remove('visible');
             document.getElementById('analysisSection').style.display = 'none';
@@ -750,6 +649,9 @@
             reset();
             analyzeSEO();
         }
+
+        // Initialize
+        analyzeSEO();
     </script>
 </body>
 </html>
