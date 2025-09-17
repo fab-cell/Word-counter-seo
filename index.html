@@ -348,8 +348,8 @@
                 <div class="feature-title">Reading Score</div>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🔤</span>
-                <div class="feature-title">Keyword Density</div>
+                <span class="feature-icon">💡</span>
+                <div class="feature-title">Content Insights</div>
             </div>
             <div class="feature-card">
                 <span class="feature-icon">❤️</span>
@@ -360,8 +360,8 @@
                 <div class="feature-title">AI Detector</div>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🔄</span>
-                <div class="feature-title">Image Converter</div>
+                <span class="feature-icon">🎨</span>
+                <div class="feature-title">Text Formatting</div>
             </div>
             <div class="feature-card">
                 <span class="feature-icon">📤</span>
@@ -585,6 +585,36 @@
                 let mediumScore = 25 + (mediumDashes >= 2 ? 15 : 0);
                 score += mediumScore;
                 breakdown.push([`En-dashes (${mediumDashes})`, `+${mediumScore}`, 'positive']);
+            }
+
+            // Excessive emoji usage
+            const emojis = (text.match(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu) || []).length;
+            
+            // Check for emojis in titles/headings (lines that start with emojis)
+            const emojiHeaders = (text.match(/^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gmu) || []).length;
+            
+            if (emojis > 0) {
+                const emojiDensity = (emojis / words.length) * 100;
+                let emojiScore = 0;
+                
+                if (emojiDensity > 2) {
+                    emojiScore += 30;
+                    breakdown.push([`Excessive emojis (${emojis})`, '+30', 'positive']);
+                } else if (emojiDensity > 1) {
+                    emojiScore += 15;
+                    breakdown.push([`Many emojis (${emojis})`, '+15', 'positive']);
+                } else if (emojis > 3) {
+                    emojiScore += 10;
+                    breakdown.push([`Multiple emojis (${emojis})`, '+10', 'positive']);
+                }
+                
+                // Additional penalty for emojis in headers/titles
+                if (emojiHeaders > 0) {
+                    emojiScore += 20;
+                    breakdown.push([`Emojis in headers (${emojiHeaders})`, '+20', 'positive']);
+                }
+                
+                score += emojiScore;
             }
 
             // Formal transitions
