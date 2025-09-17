@@ -432,25 +432,35 @@
             score += Math.min(25, (unique.size / words.length) * 100);
             document.getElementById('contentScore').textContent = Math.round(score);
 
-            // Content Strength (%)
-            const power = ['amazing', 'excellent', 'perfect', 'best', 'top', 'leading'];
-            const common = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'];
-            let meaningful = 0;
-            let validWords = 0;
+            // Content Strength (%) - Fixed algorithm
+            const powerWords = ['amazing', 'excellent', 'perfect', 'outstanding', 'incredible', 'fantastic', 'superior', 'premium', 'ultimate', 'best', 'top', 'leading', 'professional', 'advanced', 'innovative', 'proven', 'guaranteed', 'effective', 'successful', 'powerful'];
+            const actionWords = ['create', 'build', 'develop', 'improve', 'enhance', 'optimize', 'boost', 'increase', 'maximize', 'achieve', 'deliver', 'transform', 'implement', 'execute', 'generate'];
+            const commonWords = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them'];
+            
+            let meaningfulCount = 0;
+            let validWordCount = 0;
             
             words.forEach(word => {
                 const clean = word.toLowerCase().replace(/[^a-z]/g, '');
-                // Only count words that are at least 3 letters and contain vowels (basic word validation)
+                
+                // Basic word validation: must have vowels and be reasonable length
                 if (clean.length >= 3 && /[aeiou]/.test(clean)) {
-                    validWords++;
-                    if (!common.includes(clean) && (clean.length > 4 || power.includes(clean))) {
-                        meaningful++;
+                    validWordCount++;
+                    
+                    // Check if it's a meaningful word
+                    const isMeaningful = !commonWords.includes(clean) && 
+                                       (powerWords.includes(clean) || 
+                                        actionWords.includes(clean) || 
+                                        clean.length > 5);
+                    
+                    if (isMeaningful) {
+                        meaningfulCount++;
                     }
                 }
             });
             
-            const strength = validWords > 0 ? (meaningful / validWords) * 100 : 0;
-            document.getElementById('contentStrength').textContent = Math.round(strength) + '%';
+            const strengthPercent = validWordCount > 0 ? (meaningfulCount / validWordCount) * 100 : 0;
+            document.getElementById('contentStrength').textContent = Math.round(strengthPercent) + '%';
 
             if (words.length > 0) {
                 document.getElementById('analysisSection').style.display = 'block';
